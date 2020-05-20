@@ -12,4 +12,6 @@ public interface JobDao {
 
     public void updateJob(Job job);
 
+    public Integer createJob(Job job);
+
 }

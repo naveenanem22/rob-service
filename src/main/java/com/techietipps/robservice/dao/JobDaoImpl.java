@@ -45,8 +45,11 @@ public class JobDaoImpl implements JobDao {
 
     @Override
     public void updateJob(Job job) {
-        
 
+    }
+
+    public Integer createJob(Job job) {
+        return 123456;
     }
 
 }

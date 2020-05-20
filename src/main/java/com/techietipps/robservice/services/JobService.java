@@ -12,4 +12,6 @@ public interface JobService {
 
     public void updateJob(Job job);
 
+    public void createJob(Job job);
+
 }

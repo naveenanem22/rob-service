@@ -5,6 +5,7 @@ import java.util.List;
 import com.techietipps.robservice.dao.JobDao;
 import com.techietipps.robservice.models.Job;
 
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class JobServiceImpl implements JobService {
     @Qualifier("jobDaoImpl")
     private JobDao jobDao;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     @Override
     public List<Job> getJobs() {
         return jobDao.getJobs();
@@ -26,9 +30,17 @@ public class JobServiceImpl implements JobService {
         return jobDao.getJobById(id);
     }
 
-    @Override    
+    @Override
     public void updateJob(Job job) {
         jobDao.updateJob(job);
     }
 
+    public void createJob(Job job) {
+        // Create an entry in the DB
+        Integer jobId = jobDao.createJob(job);
+
+        // Send a message to RabbitMQ post successful creation of the job
+        amqpTemplate.convertAndSend("directExchange", "recruitment", "JOB_CREATED: " + jobId);
+
+    }
 }
