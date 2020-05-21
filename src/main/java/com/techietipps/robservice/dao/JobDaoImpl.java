@@ -2,6 +2,7 @@ package com.techietipps.robservice.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.techietipps.robservice.models.Job;
 
@@ -49,7 +50,8 @@ public class JobDaoImpl implements JobDao {
     }
 
     public Integer createJob(Job job) {
-        return 123456;
+        Random random = new Random();
+        return random.nextInt(10000);
     }
 
 }

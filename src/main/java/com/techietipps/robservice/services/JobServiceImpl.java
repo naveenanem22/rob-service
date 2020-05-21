@@ -8,6 +8,7 @@ import com.techietipps.robservice.models.Job;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service("jobServiceImpl")
@@ -16,6 +17,9 @@ public class JobServiceImpl implements JobService {
     @Autowired
     @Qualifier("jobDaoImpl")
     private JobDao jobDao;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -40,7 +44,8 @@ public class JobServiceImpl implements JobService {
         Integer jobId = jobDao.createJob(job);
 
         // Send a message to RabbitMQ post successful creation of the job
-        amqpTemplate.convertAndSend("directExchange", "recruitment", "JOB_CREATED: " + jobId);
+        amqpTemplate.convertAndSend(env.getProperty("rob.rabbitmq.exchange.directExchange"),
+                env.getProperty("rob.rabbitmq.routing.recruitmentrouting"), "JOB_CREATED: " + jobId);
 
     }
 }
